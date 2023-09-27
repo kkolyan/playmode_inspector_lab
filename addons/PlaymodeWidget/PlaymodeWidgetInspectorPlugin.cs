@@ -27,7 +27,7 @@ public partial class PlaymodeWidgetInspectorPlugin : EditorInspectorPlugin
                 return true;
             }
             case PlaymodeWidgetHelper.GetWidgetContent: return true;
-            case PlaymodeWidgetHelper.PushButtonPress: return true;
+            case PlaymodeWidgetHelper.PushEvent: return true;
             default: return obj.GetClass() == "EditorDebuggerRemoteObject";
         }
     }

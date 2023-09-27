@@ -11,7 +11,9 @@ using Array = Godot.Collections.Array;
 public static class PlaymodeWidgetHelper
 {
     internal const string IsPlaymodeInspectorWidget = "IsPlaymodeInspectorWidget";
-    internal const string PushButtonPress = "PushButtonPress";
+    internal const string PushEvent = "PushEvent";
+    internal const string EventTypeTextChanged = "TextChanged";
+    internal const string EventTypeButtonPressed = "ButtonPressed";
     internal const string GetWidgetContent = "GetWidgetContent";
 
     public struct State
@@ -24,7 +26,7 @@ public static class PlaymodeWidgetHelper
     {
         var properties = new Array<Dictionary>();
         AddProperty(properties, IsPlaymodeInspectorWidget, Variant.Type.Bool);
-        AddProperty(properties, PushButtonPress, Variant.Type.Dictionary);
+        AddProperty(properties, PushEvent, Variant.Type.Dictionary);
         AddProperty(properties, GetWidgetContent, Variant.Type.String);
         return properties;
     }
@@ -55,7 +57,7 @@ public static class PlaymodeWidgetHelper
 
     public static bool Set(string property, Variant value, ref State state)
     {
-        if (property == PushButtonPress)
+        if (property == PushEvent)
         {
             state.DataCache = null;
             var command = GD.StrToVar(value.AsString()).AsGodotDictionary();
@@ -68,8 +70,19 @@ public static class PlaymodeWidgetHelper
                 node = node.GetNode(segment);
             }
 
-            GD.Print($"Emitting signal 'pressed' to {node}");
-            node.EmitSignal("pressed");
+            switch (command["type"].AsString())
+            {
+                case EventTypeButtonPressed:
+
+                    node.EmitSignal("pressed");
+                    break;
+                case EventTypeTextChanged:
+
+                    ((TextEdit)node).Text = command["text"].AsString();
+                    node.EmitSignal("text_changed");
+                    break;
+                    
+            }
 
             return true;
         }

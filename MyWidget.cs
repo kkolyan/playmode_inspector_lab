@@ -13,10 +13,17 @@ public partial class MyWidget: Node
 
     private Control CreateWidgetContent()
     {
+        var textEdit = new TextEdit {CustomMinimumSize = new Vector2(380, 40)};
+        textEdit.Name = "Text1";
+        textEdit.TextChanged += () =>
+        {
+            GD.Print($"TextChanged ('{textEdit.Name}'): {textEdit.Text}");
+        };
         return CreateBox(true, "Box", new Control[]
         {
             CreateButton("A"),
             CreateButton("B"),
+            textEdit,
         });
     }
 

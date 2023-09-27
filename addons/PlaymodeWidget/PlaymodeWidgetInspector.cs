@@ -38,7 +38,21 @@ public partial class PlaymodeWidgetInspector : EditorProperty
                 var request = new Dictionary();
                 request["id"] = Time.GetTicksMsec();
                 request["path"] = nodePath;
-                _remoteWidget.Set(PlaymodeWidgetHelper.PushButtonPress, request);
+                request["type"] = PlaymodeWidgetHelper.EventTypeButtonPressed;
+                _remoteWidget.Set(PlaymodeWidgetHelper.PushEvent, request);
+            };
+        }
+
+        if (control is TextEdit text)
+        {
+            text.TextChanged += () =>
+            {
+                var request = new Dictionary();
+                request["id"] = Time.GetTicksMsec();
+                request["path"] = nodePath;
+                request["type"] = PlaymodeWidgetHelper.EventTypeTextChanged;
+                request["text"] = text.Text;
+                _remoteWidget.Set(PlaymodeWidgetHelper.PushEvent, request);
             };
         }
 
