@@ -12,30 +12,46 @@ public static class PlaymodeWidgetHelper
 {
     internal const string IsPlaymodeInspectorWidget = "IsPlaymodeInspectorWidget";
     internal const string PushEvent = "PushEvent";
+    internal const string VirtualProperties = "VirtualProperties";
+    internal const string ChooseVirtualProperty = "ChooseVirtualProperty";
     internal const string EventTypeTextChanged = "TextChanged";
     internal const string EventTypeButtonPressed = "ButtonPressed";
     internal const string GetWidgetContent = "GetWidgetContent";
+    
+    public delegate Control CreateWidgetContent(string virtualPropertyName);
 
     public struct State
     {
         internal string DataCache;
         internal Control PrevUi;
+        internal string CurrentProperty;
+        public Array<string> VirtualProperties;
     }
 
-    public static Array<Dictionary> GetPropertyList()
+    public static Array<Dictionary> GetPropertyList(IEnumerable<string> virtualProperties, ref State state)
     {
         var properties = new Array<Dictionary>();
         AddProperty(properties, IsPlaymodeInspectorWidget, Variant.Type.Bool);
         AddProperty(properties, PushEvent, Variant.Type.Dictionary);
         AddProperty(properties, GetWidgetContent, Variant.Type.String);
+        var virtualPropertiesList = virtualProperties.ToArray();
+        foreach (var virtualProperty in virtualPropertiesList)
+        {
+            AddProperty(properties, virtualProperty, Variant.Type.Nil);
+        }
+
+        state.VirtualProperties = new Array<string>(virtualPropertiesList);
+        AddProperty(properties, VirtualProperties, Variant.Type.Array);
+
         return properties;
     }
 
-    public static Variant Get(string property, Func<Control> createWidgetContent, ref State state)
+    public static Variant Get(string property, CreateWidgetContent createWidgetContent, ref State state)
     {
         switch (property)
         {
             case IsPlaymodeInspectorWidget: return true;
+            case VirtualProperties: return state.VirtualProperties;
             case GetWidgetContent:
             {
                 var data = state.DataCache;
@@ -44,7 +60,7 @@ public static class PlaymodeWidgetHelper
                     return data;
                 }
 
-                var ui = createWidgetContent.Invoke();
+                var ui = createWidgetContent.Invoke(state.CurrentProperty);
                 var tree = ToTree(ui);
                 data = GD.VarToStr(tree);
                 state.PrevUi = ui;
@@ -81,9 +97,14 @@ public static class PlaymodeWidgetHelper
                     ((TextEdit)node).Text = command["text"].AsString();
                     node.EmitSignal("text_changed");
                     break;
-                    
             }
 
+            return true;
+        }
+
+        if (property == ChooseVirtualProperty)
+        {
+            state.CurrentProperty = value.AsString();
             return true;
         }
 

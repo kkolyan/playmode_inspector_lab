@@ -1,4 +1,5 @@
 ﻿#if TOOLS
+using System.Linq;
 using Godot;
 
 namespace playmode_inspector_lab.addons.PlaymodeWidget;
@@ -28,7 +29,9 @@ public partial class PlaymodeWidgetInspectorPlugin : EditorInspectorPlugin
             }
             case PlaymodeWidgetHelper.GetWidgetContent: return true;
             case PlaymodeWidgetHelper.PushEvent: return true;
-            default: return obj.GetClass() == "EditorDebuggerRemoteObject";
+            default:
+                return obj.GetClass() == "EditorDebuggerRemoteObject" &&
+                       obj.Get(PlaymodeWidgetHelper.VirtualProperties).AsStringArray().Contains(name);
         }
     }
 }

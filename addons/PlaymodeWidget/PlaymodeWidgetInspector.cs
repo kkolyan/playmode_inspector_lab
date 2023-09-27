@@ -22,14 +22,15 @@ public partial class PlaymodeWidgetInspector : EditorProperty
             RemoveChild(_widgetContent);
         }
 
+        _remoteWidget.Set(PlaymodeWidgetHelper.ChooseVirtualProperty, GetEditedProperty());
         var s = _remoteWidget.Get(PlaymodeWidgetHelper.GetWidgetContent).AsString();
         var uiVariant = GD.StrToVar(s);
         _widgetContent = PlaymodeWidgetHelper.ToNode(uiVariant);
-        EnhanceButtons(_widgetContent, new NodePath(_widgetContent.Name));
+        DelegateInputs(_widgetContent, new NodePath(_widgetContent.Name));
         AddChild(_widgetContent);
     }
 
-    private void EnhanceButtons(Node control, string nodePath)
+    private void DelegateInputs(Node control, string nodePath)
     {
         if (control is Button button)
         {
@@ -58,7 +59,7 @@ public partial class PlaymodeWidgetInspector : EditorProperty
 
         foreach (var child in control.GetChildren())
         {
-            EnhanceButtons(child, nodePath + "/" + child.Name);
+            DelegateInputs(child, nodePath + "/" + child.Name);
         }
     }
 }

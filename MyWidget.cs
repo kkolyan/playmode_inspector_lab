@@ -4,21 +4,26 @@ using playmode_inspector_lab.addons.PlaymodeWidget;
 
 namespace playmode_inspector_lab;
 
-public partial class MyWidget: Node
+public partial class MyWidget : Node
 {
     private PlaymodeWidgetHelper.State _state;
-    public override Array<Dictionary> _GetPropertyList() => PlaymodeWidgetHelper.GetPropertyList();
-    public override Variant _Get(StringName property) => PlaymodeWidgetHelper.Get(property, CreateWidgetContent, ref _state);
-    public override bool _Set(StringName property, Variant value) => PlaymodeWidgetHelper.Set(property, value, ref _state);
 
-    private Control CreateWidgetContent()
+    public override Array<Dictionary> _GetPropertyList() => PlaymodeWidgetHelper.GetPropertyList(
+        new[] { "X", "Y" },
+        ref _state
+    );
+
+    public override Variant _Get(StringName property) =>
+        PlaymodeWidgetHelper.Get(property, CreateWidgetContent, ref _state);
+
+    public override bool _Set(StringName property, Variant value) =>
+        PlaymodeWidgetHelper.Set(property, value, ref _state);
+
+    private Control CreateWidgetContent(string virtualPropertyName)
     {
-        var textEdit = new TextEdit {CustomMinimumSize = new Vector2(380, 40)};
+        var textEdit = new TextEdit { CustomMinimumSize = new Vector2(380, 40) };
         textEdit.Name = "Text1";
-        textEdit.TextChanged += () =>
-        {
-            GD.Print($"TextChanged ('{textEdit.Name}'): {textEdit.Text}");
-        };
+        textEdit.TextChanged += () => { GD.Print($"TextChanged ('{textEdit.Name}'): {textEdit.Text}"); };
         return CreateBox(true, "Box", new Control[]
         {
             CreateButton("A"),
