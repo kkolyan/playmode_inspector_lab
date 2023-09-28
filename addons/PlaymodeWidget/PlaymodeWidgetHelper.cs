@@ -62,12 +62,21 @@ public static class PlaymodeWidgetHelper
             state.DataCache = null;
             var command = GD.StrToVar(value.AsString()).AsGodotDictionary();
             var path = command["path"].AsString();
-            var node = new Node();
-            node.AddChild(state.PrevUi);
-            GD.Print($"handling command to press '{path}'");
-            foreach (var segment in path.Split("/"))
+            var root = new Node();
+            root.AddChild(state.PrevUi);
+            var node = root;
+            try
             {
-                node = node.GetChild(int.Parse(segment));
+                GD.Print($"handling command to press '{path}'");
+                var split = path.Split("/");
+                foreach (var segment in split)
+                {
+                    node = node.GetChild(int.Parse(segment));
+                }
+            }
+            finally
+            {
+                root.RemoveChild(state.PrevUi);
             }
 
             switch (command["type"].AsString())

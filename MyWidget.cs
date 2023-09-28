@@ -4,6 +4,7 @@ using playmode_inspector_lab.addons.PlaymodeWidget;
 
 namespace playmode_inspector_lab;
 
+[Tool]
 public partial class MyWidget: Node
 {
     private PlaymodeWidgetHelper.State _state;

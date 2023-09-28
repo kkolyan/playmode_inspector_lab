@@ -19,10 +19,8 @@ public partial class PlaymodeWidgetInspectorPlugin : EditorInspectorPlugin
         {
             case PlaymodeWidgetHelper.IsPlaymodeInspectorWidget:
             {
-                if (obj.GetClass() == "EditorDebuggerRemoteObject")
-                {
-                    AddPropertyEditor(name, new PlaymodeWidgetInspector(obj));
-                }
+                var playMode = obj.GetClass() == "EditorDebuggerRemoteObject";
+                AddPropertyEditor(name, new PlaymodeWidgetInspector(obj, playMode));
 
                 return true;
             }

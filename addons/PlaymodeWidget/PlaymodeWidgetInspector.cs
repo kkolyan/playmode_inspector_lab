@@ -8,11 +8,13 @@ namespace playmode_inspector_lab.addons.PlaymodeWidget;
 public partial class PlaymodeWidgetInspector : EditorProperty
 {
     private readonly GodotObject _remoteWidget;
+    private readonly bool _playMode;
     private Node _widgetContent;
 
-    public PlaymodeWidgetInspector(GodotObject remoteWidget)
+    public PlaymodeWidgetInspector(GodotObject remoteWidget, bool playMode)
     {
         _remoteWidget = remoteWidget;
+        _playMode = playMode;
     }
 
     public override void _UpdateProperty()
