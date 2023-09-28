@@ -67,7 +67,7 @@ public static class PlaymodeWidgetHelper
             GD.Print($"handling command to press '{path}'");
             foreach (var segment in path.Split("/"))
             {
-                node = node.GetNode(segment);
+                node = node.GetChild(int.Parse(segment));
             }
 
             switch (command["type"].AsString())

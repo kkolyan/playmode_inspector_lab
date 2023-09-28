@@ -25,7 +25,7 @@ public partial class PlaymodeWidgetInspector : EditorProperty
         var s = _remoteWidget.Get(PlaymodeWidgetHelper.GetWidgetContent).AsString();
         var uiVariant = GD.StrToVar(s);
         _widgetContent = PlaymodeWidgetHelper.ToNode(uiVariant);
-        EnhanceButtons(_widgetContent, new NodePath(_widgetContent.Name));
+        EnhanceButtons(_widgetContent, new NodePath("0"));
         AddChild(_widgetContent);
     }
 
@@ -56,9 +56,11 @@ public partial class PlaymodeWidgetInspector : EditorProperty
             };
         }
 
-        foreach (var child in control.GetChildren())
+        var nodes = control.GetChildren();
+        for (var i = 0; i < nodes.Count; i++)
         {
-            EnhanceButtons(child, nodePath + "/" + child.Name);
+            var child = nodes[i];
+            EnhanceButtons(child, nodePath + "/" + i);
         }
     }
 }

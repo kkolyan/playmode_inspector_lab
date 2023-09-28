@@ -14,12 +14,11 @@ public partial class MyWidget: Node
     private Control CreateWidgetContent()
     {
         var textEdit = new TextEdit {CustomMinimumSize = new Vector2(380, 40)};
-        textEdit.Name = "Text1";
         textEdit.TextChanged += () =>
         {
             GD.Print($"TextChanged ('{textEdit.Name}'): {textEdit.Text}");
         };
-        return CreateBox(true, "Box", new Control[]
+        return CreateBox(true, new Control[]
         {
             CreateButton("A"),
             CreateButton("B"),
@@ -30,17 +29,15 @@ public partial class MyWidget: Node
     private static Button CreateButton(string name)
     {
         var button = new Button();
-        button.Name = name;
         button.Size = new Vector2(40, 40);
         button.Text = name;
         button.Pressed += () => { GD.Print($"Backend Button Pressed: {name}"); };
         return button;
     }
 
-    private static Container CreateBox(bool horizontal, string name, Control[] children)
+    private static Container CreateBox(bool horizontal, Control[] children)
     {
         Container box = horizontal ? new HBoxContainer() : new VBoxContainer();
-        box.Name = name;
         foreach (var child in children)
         {
             box.AddChild(child);
